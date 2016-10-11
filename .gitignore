@@ -31,6 +31,9 @@ depends/*.*
 .pydevproject
 .project
 
+# Ignore PyCharm files
+.idea
+
 # Ignore vi(m) swap files
 *.swp
 
