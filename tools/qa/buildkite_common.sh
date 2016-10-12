@@ -46,7 +46,7 @@ get_ancestor () {
 
 copy_qa_scripts () {
     mkdir -p ${QAWORKDIR}
-    cp -Ra tools/qa/* ${QAWORKDIR}/
+    cp -Ra ${BASH_SOURCE%/*}/* ${QAWORKDIR}/
 }
 
 # Some colors

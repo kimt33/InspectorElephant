@@ -13,7 +13,7 @@ report_error() {
 ### a) Parts that are always done
 
 # Check the author names
-./tools/qa/check_names.py || report_error "Failed author/committer check (current branch)"
+${BASH_SOURCE%/*}/check_names.py || report_error "Failed author/committer check (current branch)"
 # Clean stuff
 echo 'Cleaning source tree'
 ./cleanfiles.sh &> /dev/null
@@ -37,18 +37,18 @@ if [ "${CURRENT_BRANCH}" == 'master' ] || [ "${CURRENT_COMMIT}" == ${ANCESTOR_CO
     nosetests -v -a '!slow' || report_error "Some fast tests failed (master branch)"
 else
     # Check for whitespace errors in every commit.
-    ./tools/qa/check_whitespace.py || report_error "Whitespace errors in some commits"
+    ${BASH_SOURCE%/*}/check_whitespace.py || report_error "Whitespace errors in some commits"
 
     # Run the first part of the comparative tests.
-    ./tools/qa/trapdoor_coverage.py feature || report_error "Trapdoor coverage failed (feature branch)"
-    ./tools/qa/trapdoor_cppcheck.py feature || report_error "Trapdoor cppcheck failed (feature branch)"
-    ./tools/qa/trapdoor_cpplint.py feature || report_error "Trapdoor cpplint failed (feature branch)"
-    ./tools/qa/trapdoor_doxygen.py feature || report_error "Trapdoor doxygen failed (feature branch)"
-    ./tools/qa/trapdoor_pylint.py feature || report_error "Trapdoor pylint failed (feature branch)"
-    ./tools/qa/trapdoor_pycodestyle.py feature || report_error "Trapdoor pycodestyle failed (feature branch)"
-    ./tools/qa/trapdoor_pydocstyle.py feature || report_error "Trapdoor pydocstyle failed (feature branch)"
-    ./tools/qa/trapdoor_import.py feature || report_error "Trapdoor import failed (feature branch)"
-    ./tools/qa/trapdoor_namespace.py feature || report_error "Trapdoor namespace failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_coverage.py feature || report_error "Trapdoor coverage failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_cppcheck.py feature || report_error "Trapdoor cppcheck failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_cpplint.py feature || report_error "Trapdoor cpplint failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_doxygen.py feature || report_error "Trapdoor doxygen failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_pylint.py feature || report_error "Trapdoor pylint failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_pycodestyle.py feature || report_error "Trapdoor pycodestyle failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_pydocstyle.py feature || report_error "Trapdoor pydocstyle failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_import.py feature || report_error "Trapdoor import failed (feature branch)"
+    ${BASH_SOURCE%/*}/trapdoor_namespace.py feature || report_error "Trapdoor namespace failed (feature branch)"
 fi
 
 # Conclude

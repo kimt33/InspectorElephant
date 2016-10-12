@@ -16,7 +16,7 @@ CURRENT_COMMIT=$(git rev-parse HEAD)
 if [ "${CURRENT_BRANCH}" != 'master' ] && [ "${CURRENT_COMMIT}" != ${ANCESTOR_COMMIT} ]; then
     # Copy the required scripts to the work directory, to make sure we're running with
     # the scripts from the feature branch, not the ancestor with the master branch.
-    cp -av ./tools/qa/trapdoor*.py ${QAWORKDIR}/
+    cp -av ${BASH_SOURCE%/*}/trapdoor*.py ${QAWORKDIR}/
 
     # Switch to ancestor
     git checkout ${ANCESTOR_COMMIT}

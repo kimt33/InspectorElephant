@@ -20,7 +20,7 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     trapdoor_pydocstyle.py"
 
     for i in ${TRAPDOORS}; do
-        tools/qa/${i} feature
+        ${BASH_SOURCE%/*}/${i} feature
     done
 
     git checkout ${ANCESTOR_SHA}

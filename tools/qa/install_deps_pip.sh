@@ -48,4 +48,4 @@ pip wheel breathe
 pip install --no-index --upgrade breathe
 
 # Remove old wheels
-./tools/qa/remove_old_wheels.py
+${BASH_SOURCE%/*}/remove_old_wheels.py

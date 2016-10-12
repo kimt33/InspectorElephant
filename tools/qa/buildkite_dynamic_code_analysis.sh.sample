@@ -13,7 +13,7 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     make -C data/refatoms/
 
     echo "--- Running trapdoors tests"
-    tools/qa/check_whitespace.py ${ANCESTOR_SHA} || report_error "Whitespace errors in some commits"
+    ${BASH_SOURCE%/*}/check_whitespace.py ${ANCESTOR_SHA} || report_error "Whitespace errors in some commits"
 
     export PYTHONPATH=$PWD
     export HORTONDATA=$PWD/data
@@ -24,8 +24,8 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
 
     echo "--- Running trapdoor tests on PR branch"
     rm -rf ${QAWORKDIR}/*.pp
-    tools/qa/trapdoor_coverage.py --nproc=6 feature
-    tools/qa/trapdoor_namespace.py feature
+    ${BASH_SOURCE%/*}/trapdoor_coverage.py --nproc=6 feature
+    ${BASH_SOURCE%/*}/trapdoor_namespace.py feature
 
     echo "--- Unpack ancestor build from previous step"
     git checkout ${ANCESTOR_SHA}

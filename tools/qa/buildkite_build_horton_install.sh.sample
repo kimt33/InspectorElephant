@@ -3,7 +3,7 @@
 source ${BASH_SOURCE%/*}/buildkite_common.sh
 
 echo "--- Basic source tests"
-./tools/qa/check_names.py
+${BASH_SOURCE%/*}/check_names.py
 
 echo "--- Build refatoms"
 rm -rf data/refatoms/*.h5 #data/refatoms/*.tar.bz2

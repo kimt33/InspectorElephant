@@ -4,7 +4,7 @@ source ${BASH_SOURCE%/*}/buildkite_common.sh
 get_ancestor  # Writes $ANCESTOR_SHA variable.
 
 echo "--- Basic source tests"
-./tools/qa/check_names.py
+${BASH_SOURCE%/*}/check_names.py
 
 echo "--- Build Cython files & HORTON"
 ./cleanfiles.sh

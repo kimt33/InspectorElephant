@@ -5,7 +5,7 @@ source ${BASH_SOURCE%/*}/common.sh
 # 1) Build all dependencies of the current branch. This is always needed. If the build
 #    fails, the script exits with -1, letting the build bot know that it should stop.
 
-tools/qa/install_deps_extra.py || exit -1
+${BASH_SOURCE%/*}/install_deps_extra.py || exit -1
 
 # 2) Get the current branch name. If not master, then check out the common ancestor with
 #    master and build all dependencies. Finally check out the current branch again.
@@ -15,7 +15,7 @@ ANCESTOR_COMMIT=$(git merge-base master ${CURRENT_BRANCH})
 CURRENT_COMMIT=$(git rev-parse HEAD)
 if [ "${CURRENT_BRANCH}" != 'master' ] && [ "${CURRENT_COMMIT}" != ${ANCESTOR_COMMIT} ]; then
         git checkout ${ANCESTOR_COMMIT}
-        tools/qa/install_deps_extra.py || exit -1
+        ${BASH_SOURCE%/*}/install_deps_extra.py || exit -1
         git checkout ${CURRENT_BRANCH}
 else
     echo "No need to install dependencies of ancestor because HEAD is (merged in) master."
