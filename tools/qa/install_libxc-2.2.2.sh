@@ -2,7 +2,7 @@
 
 NAMEVER=libxc-2.2.2
 set -e
-source tools/qa/common.sh
+source ${BASH_SOURCE%/*}/common.sh
 if [ ! -d "${CACHED}/${NAMEVER}/lib" ]; then
 (
     echo -e "${GREEN}Building and installing ${NAMEVER} from scratch${RESET}"

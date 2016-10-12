@@ -53,7 +53,8 @@ class CPPLintTrapdoorProgram(TrapdoorProgram):
         This includes a copy of cpplint.py to QAWORKDIR.
         """
         TrapdoorProgram.prepare(self)
-        shutil.copy('tools/qa/cpplint.py', self.cpplint_file)
+        qatooldir = os.path.dirname(os.path.abspath(__file__))
+        shutil.copy(os.path.join(qatooldir, 'cpplint.py'), self.cpplint_file)
         os.chmod(self.cpplint_file, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
 
     def get_stats(self, config, args):

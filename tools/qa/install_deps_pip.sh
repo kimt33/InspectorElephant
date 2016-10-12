@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source tools/qa/common.sh
+source ${BASH_SOURCE%/*}/common.sh
 
 # This script assumes that a virtualenv is created, in which pip will then automatically
 # install the dependencies.

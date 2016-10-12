@@ -48,7 +48,8 @@ class PyCodeStyleTrapdoorProgram(TrapdoorProgram):
         This includes a copy of tools/qa/pycodestyle to QAWORKDIR.
         """
         TrapdoorProgram.prepare(self)
-        shutil.copy('tools/qa/%s' % os.path.basename(self.config_file), self.config_file)
+        qatooldir = os.path.dirname(os.path.abspath(__file__))
+        shutil.copy(os.path.join(qatooldir, os.path.basename(self.config_file)), self.config_file)
 
     def get_stats(self, config, args):
         """Run tests using pycodestyle.

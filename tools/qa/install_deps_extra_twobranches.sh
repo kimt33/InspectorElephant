@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source tools/qa/common.sh
+source ${BASH_SOURCE%/*}/common.sh
 
 # 1) Build all dependencies of the current branch. This is always needed. If the build
 #    fails, the script exits with -1, letting the build bot know that it should stop.

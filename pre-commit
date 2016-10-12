@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ${BASH_SOURCE%/*}/qa.cfg
+
 red="\033[1;31m"
 color_end="\033[0m"
 
@@ -11,9 +13,9 @@ if [[ `git diff --cached --check` ]]; then
 fi
 
 # Check for untracked files (not in .gitignore)
-if [[ `git status -u data horton doc scripts tools -s | grep "^??"` ]]; then
+if [[ `git status -u ${CODE_DIRS} -s | grep "^??"` ]]; then
     echo -e "${red}Commit failed: untracked files (not in .gitignore).${color_end}"
-    git status -u data horton doc scripts tools -s | grep "^??"
+    git status -u ${CODE_DIRS} -s | grep "^??"
     exit 1
 fi
 

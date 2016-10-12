@@ -247,7 +247,8 @@ class TrapdoorProgram(object):
         This usually comes down to copying some config files to the QAWORKDIR. This method
         is only called when in the feature branch.
         """
-        shutil.copy('tools/qa/trapdoor.cfg', self.trapdoor_config_file)
+        qatooldir = os.path.dirname(os.path.abspath(__file__))
+        shutil.copy(os.path.join(qatooldir, 'trapdoor.cfg'), self.trapdoor_config_file)
 
     def run_tests(self, args):
         """Run the tests on a single branch HEAD.

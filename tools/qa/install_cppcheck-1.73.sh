@@ -3,7 +3,7 @@
 VERSION=1.73
 NAMEVER=cppcheck-${VERSION}
 set -e
-source tools/qa/common.sh
+source ${BASH_SOURCE%/*}/common.sh
 if [ ! -f "${CACHED}/${NAMEVER}/cppcheck" ]; then
 (
     echo -e "${GREEN}Building and installing ${NAMEVER} from scratch${RESET}"

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # This file gets sourced by all install and activate scripts
 
 # Some colors
@@ -15,7 +16,7 @@ mkdir -p ${CACHED}
 
 # Make sure matplotlib does not complain about DISPLAY
 export MATPLOTLIBRC=${QAWORKDIR}
-echo "backend: agg" > $MATPLOTLIBRC/matplotlibrc
+echo "backend: agg" > ${MATPLOTLIBRC}/matplotlibrc
 
 
 abort_error() {

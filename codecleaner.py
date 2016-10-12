@@ -19,20 +19,20 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>
 #
 # --
-'''Tool to remove whitespace and tab cruft from source code.'''
+"""Tool to remove whitespace and tab cruft from source code."""
 
 import sys
 
 
 def clean_code(fn):
-    '''Return the clean version of a file in which trailing whitespaces on each line are removed,
-       tabs are replced by four spcaes, and empty lines at the end of the file are discarded.
+    """Return the clean version of a file in which trailing whitespaces on each line are removed,
+       tabs are replaced by four spaces, and empty lines at the end of the file are discarded.
 
        *** Arguments ***
 
        fn
            The file to be cleaned.
-    '''
+    """
     print 'Cleaning'.upper(), fn
 
     # read lines
@@ -67,5 +67,5 @@ def clean_code(fn):
 
 if __name__ == '__main__':
     # just process all files given as command-line arguments
-    for fn in sys.argv[1:]:
-        clean_code(fn)
+    for f in sys.argv[1:]:
+        clean_code(f)

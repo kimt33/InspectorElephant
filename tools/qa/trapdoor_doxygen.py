@@ -67,7 +67,10 @@ class DoxygenTrapdoorProgram(TrapdoorProgram):
         This includes a copy of doc/doxygen.conf to QAWORKDIR.
         """
         TrapdoorProgram.prepare(self)
-        shutil.copy('doc/doxygen.conf', self.doxyconf_file)
+        qatooldir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(qatooldir))
+        doxygencfg = os.path.join(project_root, "doc", "doxygen.conf"),
+        shutil.copy(doxygencfg, self.doxyconf_file)
 
     def get_stats(self, config, args):
         """Run tests using doxygen.

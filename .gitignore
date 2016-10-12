@@ -40,6 +40,9 @@ depends/*.*
 # Ignore user configuration for libraries
 setup.cfg
 
+# Ignore QA config
+qa.cfg
+
 # Ignore mac .DS_Store
 .DS_Store
 

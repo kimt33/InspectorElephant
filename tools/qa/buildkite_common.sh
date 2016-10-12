@@ -17,9 +17,9 @@ checkout_merge_commit () {
         MERGESTATE="null"
 
         while [ "$MERGESTATE" = "null" ]; do
-            MERGESTATE=`curl $API_URL | jq .mergeable`
+            MERGESTATE=`curl ${API_URL} | jq .mergeable`
             if [ "$MERGESTATE" = "true" ]; then
-                git fetch -f origin pull/$BUILDKITE_PULL_REQUEST/merge:temp_merge
+                git fetch -f origin pull/${BUILDKITE_PULL_REQUEST}/merge:temp_merge
                 git checkout temp_merge
             elif [ "$MERGESTATE" = "null" ]; then
                 # give github a chance to compute mergeability
@@ -38,15 +38,15 @@ get_ancestor () {
         echo "--- Finding PR ancestor"
         API_URL=`echo "$BUILDKITE_REPO" | sed "s/git@/https:\/\/api./" | sed "s/\.com:/\.com\/repos\//" | sed "s/\.git$/\/pulls\/$BUILDKITE_PULL_REQUEST/"`
         # Redundant quotes are removed from ANCESTOR_SHA.
-        ANCESTOR_SHA=`curl $API_URL | jq .base.sha | sed "s/\"//g"`
+        ANCESTOR_SHA=`curl ${API_URL} | jq .base.sha | sed "s/\"//g"`
     fi
 
     return 0
 }
 
 copy_qa_scripts () {
-    mkdir -p $QAWORKDIR
-    cp -Ra tools/qa/* $QAWORKDIR/
+    mkdir -p ${QAWORKDIR}
+    cp -Ra tools/qa/* ${QAWORKDIR}/
 }
 
 # Some colors

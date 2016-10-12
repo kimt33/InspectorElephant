@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source tools/qa/common.sh
+source ${BASH_SOURCE%/*}/common.sh
 export NUM_FAILED=0
 
 report_error() {

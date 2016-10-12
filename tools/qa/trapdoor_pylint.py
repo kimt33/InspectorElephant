@@ -50,7 +50,8 @@ class PylintTrapdoorProgram(TrapdoorProgram):
         This includes a copy of tools/qa/pylintrc to QAWORKDIR.
         """
         TrapdoorProgram.prepare(self)
-        shutil.copy('tools/qa/pylintrc', self.rcfile)
+        qatooldir = os.path.dirname(os.path.abspath(__file__))
+        shutil.copy(os.path.join(qatooldir, 'pylintrc'), self.rcfile)
 
     def get_stats(self, config, args):
         """Run tests using Pylint.
