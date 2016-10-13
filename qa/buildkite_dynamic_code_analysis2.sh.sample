@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
 
+#
+# This script runs dynamic trapdoor tests on the code. It first cleans the working directory (you
+# cannot assume it is already clean from previous builds) and then unpacks the compiled binaries
+# from the previous buildkite step. Note that if you don't compile anything in a previous step,
+# you should remove the download the artifacts portion of this script.
+#
+# There are two of these scripts in order to make use of parallelism in the buildkite agents. (They
+# can run concurrently.)
+#
+# Use this as a template to implement any dynamic tests.
+#
+
+## Don't touch this code if you don't understand it ##
 if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
+## END ##
+
     source ${BASH_SOURCE%/*}/buildkite_common.sh
     get_ancestor  # Writes $ANCESTOR_SHA variable.
 
@@ -35,4 +50,7 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
 
     ${QAWORKDIR}/trapdoor_pylint.py ancestor
     ${QAWORKDIR}/trapdoor_pylint.py report
+
+## Don't touch this code if you don't understand it ##
 fi
+## END ##

@@ -24,6 +24,23 @@ Installation
 
 4) Run the install.sh script to copy a .gitignore file into your project home. It will also copy a pre-commit hook to save you pain with whitespaces and also the cleanfiles script to make sure you don't accidentally delete valuable files. More detail of the pre-commit hook can be found [here](https://theochem.github.io/horton/2.0.1/tech_dev_git.html#tools-pre-commit)
 
+Config Files
+============
+The qa/trapdoor.cfg file has the following format. It is parsed as a JSON file and as such should conform to that syntax.
+
+| Field              | Description                                                           | Example                                                                                        |
+|--------------------|-----------------------------------------------------------------------|------------------------------------------------------------------------------------------------|
+| "py_packages"      | Name(s) of python package                                             | ["horton"]                                                                                     |
+| "py_directories"   | Directories to check for python code style (relative to project root) | ["horton", "tools/qa", "scripts", "doc"]                                                       |
+| "py_test_files"    | Directories of nosetest files                                         | ["horton/test/test_*.py", "horton/*/test/test_*.py"]                                           |
+| "py_exclude"       | Files to exclude from python source checks                            | ["cpplint.py"]                                                                                 |
+| "py_invalid_names" | Names which should not be exported in \_\_all\_\_.                    | ["np", "numpy", "m", "math", "scipy", "sp", "matplotlib",,"pyplot", "plt", "pt", "h5py", "h5"] |
+| "cpp_directories"  | Directories to check for c++ code style (relative to project root)    | ["horton"]                                                                                     |
+| "cpp_exclude"      | .Files to exclude from c++ source checks                              | ["*_inc.cpp", "cext.cpp"]                                                                      |
+| "doxygen_root"     | Directory with documentation (relative to project root)               | "doc"                                                                                          |
+| "doxygen_conf"     | Name of doxygen config file (within doxygen_root)                     | "doxygen.conf"                                                                                 |
+| "doxygen_warnings" | Doxygen warning file specified by WARN_LOGFILE in doxygen_conf        | "doxygen_warnings.log"                                                                         |
+
 Explanation of Scripts
 ======================
 The scripts in _qa_ are used by the continuous integration (Buildkite and, for the time being, also Travis-CI). Most scripts can also be used locally to hunt down problems in the CI.

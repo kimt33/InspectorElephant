@@ -1,6 +1,15 @@
 #!/bin/bash
 
+#
+# This script checks for errors in whitespace and also untracked files and loose print statements.
+# It helps to keep the git diffs clean by not comparing spurious whitespaces.
+#
+
+# Change this to a space-delimited list of dirs in the top level of your project that contain
+# code to be checked.
 CODE_DIRS="data horton doc scripts tools"
+
+## Nothing to change below this line ##
 
 red="\033[1;31m"
 color_end="\033[0m"

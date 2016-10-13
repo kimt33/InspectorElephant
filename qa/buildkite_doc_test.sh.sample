@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+#
+# This script tests building the documentation of HORTON.
+#
+# Reimplement as needed.
+#
+
 source ${BASH_SOURCE%/*}/buildkite_common.sh
 
 echo "--- Prep working directory"
