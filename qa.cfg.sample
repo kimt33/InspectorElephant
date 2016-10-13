@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-# Directories where the code is contained, relative to the root of the git repo.
-CODE_DIRS="data horton doc scripts tools"
