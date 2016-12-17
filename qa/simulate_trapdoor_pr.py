@@ -101,7 +101,7 @@ def main():
     """Main program."""
     # A few general things.
     args = parse_args()
-    repo = git.Repo('.')
+    repo = git.Repo('../..')
     log.set_level(args.verbose)
 
     # Get the QAWORKDIR. Create if it does not exist yet.
@@ -211,7 +211,7 @@ def git_ls_remote(url):
            A dictionary with (ref, shahex) combinations.
     """
     remote_refs = {}
-    git_interface = git.cmd.Git()
+    git_interface = git.cmd.Git('../..')
     for ref in git_interface.ls_remote(url).split('\n'):
         hash_ref_list = ref.split('\t')
         remote_refs[hash_ref_list[1]] = hash_ref_list[0]
