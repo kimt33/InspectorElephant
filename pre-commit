@@ -7,7 +7,7 @@
 
 # Change this to a space-delimited list of dirs in the top level of your project that contain
 # code to be checked.
-CODE_DIRS="data horton doc scripts tools"
+CODE_DIRS="data geminals gui qa"
 
 ## Nothing to change below this line ##
 

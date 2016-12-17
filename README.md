@@ -47,9 +47,9 @@ The scripts in _qa_ are used by the continuous integration (Buildkite and, for t
 
 The buildkite_* scripts are run on the buildkite cluster. The current examples are for testing HORTON. To reimplement them, you must change the relevant details in each script to build and run your unit tests. These scripts are essentially bash scripts with some extra environmental variables made available for obtaining information from github, and also some machinery for parallelizing builds. More information can be found [here](https://buildkite.com/docs/guides/writing-build-scripts), [here](https://buildkite.com/docs/guides/artifacts) , and [here](https://buildkite.com/docs/guides/environment-variables) .
 
-The script qa/simulate_trapdoor_pr.py facilitates local execution of the trapdoor scripts. These scripts will not allow a degredation in code quality. i.e. If your past commit had 5 undocumented functions, your current commit cannot have 6 or higher undocumented functions.  
+The script qa/simulate_trapdoor_pr.py facilitates local execution of the trapdoor scripts. These scripts will not allow a degredation in code quality. i.e. If your past commit had 5 undocumented functions, your current commit cannot have 6 or higher undocumented functions.
 
-The trapdoor scripts are for testing different aspects of code quality. 
+The trapdoor scripts are for testing different aspects of code quality.
 
 - qa/trapdoor_coverage.py: Percentage of code covered by unit tests
 - qa/trapdoor_cppcheck.py: Static analysis of c++ bugs.
