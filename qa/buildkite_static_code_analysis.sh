@@ -12,10 +12,7 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     echo "--- Running trapdoors tests"
     rm -rf ${QAWORKDIR}/*.pp
 
-    TRAPDOORS="trapdoor_cppcheck.py
-    trapdoor_cpplint.py
-    trapdoor_doxygen.py
-    trapdoor_import.py
+    TRAPDOORS="trapdoor_import.py
     trapdoor_pycodestyle.py
     trapdoor_pydocstyle.py"
 

@@ -6,6 +6,9 @@
 # from the previous buildkite step. Note that if you don't compile anything in a previous step,
 # you should remove the download the artifacts portion of this script.
 #
+# There are two of these scripts in order to make use of parallelism in the buildkite agents. (They
+# can run concurrently.)
+#
 # Use this as a template to implement any dynamic tests.
 #
 
@@ -20,43 +23,25 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     rm -rf *_pr.tar.gz *_ancestor.tar.gz
     ./cleanfiles.sh
 
-    echo "--- Build refatoms"
-    rm -rf data/refatoms/*.h5 #data/refatoms/*.tar.bz2
-    make -C data/refatoms/
-
-    echo "--- Running trapdoors tests"
-    ${BASH_SOURCE%/*}/check_whitespace.py ${ANCESTOR_SHA} || report_error "Whitespace errors in some commits"
-
-    export PYTHONPATH=$PWD
-    export HORTONDATA=$PWD/data
-
     echo "--- Unpack PR build from previous step"
-    buildkite-agent artifact download horton_pr.tar.gz .
-    tar xvf horton_pr.tar.gz
+    buildkite-agent artifact download wfns_pr.tar.gz .
+    tar xvf wfns_pr.tar.gz
 
-    echo "--- Running trapdoor tests on PR branch"
+    echo "--- Running trapdoors tests on PR branch"
     rm -rf ${QAWORKDIR}/*.pp
-    ${BASH_SOURCE%/*}/trapdoor_coverage.py --nproc=6 feature
-    ${BASH_SOURCE%/*}/trapdoor_namespace.py feature
+    ${BASH_SOURCE%/*}/trapdoor_pylint.py feature
 
     echo "--- Unpack ancestor build from previous step"
     git checkout ${ANCESTOR_SHA}
-    buildkite-agent artifact download horton_ancestor.tar.gz .
+    buildkite-agent artifact download wfns_ancestor.tar.gz .
     ./cleanfiles.sh
-    tar xvf horton_ancestor.tar.gz
-
-    echo "--- Build refatoms"
-    rm -rf data/refatoms/*.h5 #data/refatoms/*.tar.bz2
-    make -C data/refatoms/
+    tar xvf wfns_ancestor.tar.gz
 
     echo "--- Running trapdoor tests on ancestor branch"
     copy_qa_scripts
 
-    ${QAWORKDIR}/trapdoor_coverage.py --nproc=6 ancestor
-    ${QAWORKDIR}/trapdoor_namespace.py ancestor
-
-    ${QAWORKDIR}/trapdoor_coverage.py report
-    ${QAWORKDIR}/trapdoor_namespace.py report
+    ${QAWORKDIR}/trapdoor_pylint.py ancestor
+    ${QAWORKDIR}/trapdoor_pylint.py report
 
 ## Don't touch this code if you don't understand it ##
 fi
