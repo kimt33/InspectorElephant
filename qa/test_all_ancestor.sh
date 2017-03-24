@@ -23,18 +23,11 @@ if [ "${CURRENT_BRANCH}" != 'master' ] && [ "${CURRENT_COMMIT}" != ${ANCESTOR_CO
 
     # Clean stuff
     ./cleanfiles.sh &> /dev/null
-    # Construct the reference atoms
-    echo 'Rebuilding database of reference atoms'
-    rm -rf data/refatoms/*.h5
-    (cd data/refatoms; make all) || report_error "Failed to make reference atoms (ancestor)"
-    # In-place build of HORTON
-    python setup.py build_ext -i || report_error "Failed to build HORTON (ancestor)"
+    # In-place build of chemtools
+    python setup.py build_ext -i || report_error "Failed to build chemtools (ancestor)"
 
     # Run trapdoor tests (from QAWORKDIR)
     ${QAWORKDIR}/trapdoor_coverage.py ancestor || report_error "Trapdoor coverage failed (ancestor)"
-    ${QAWORKDIR}/trapdoor_cppcheck.py ancestor || report_error "Trapdoor cppcheck failed (ancestor)"
-    ${QAWORKDIR}/trapdoor_cpplint.py ancestor || report_error "Trapdoor cpplint failed (ancestor)"
-    ${QAWORKDIR}/trapdoor_doxygen.py ancestor || report_error "Trapdoor doxygen failed (ancestor)"
     ${QAWORKDIR}/trapdoor_pylint.py ancestor || report_error "Trapdoor pylint failed (ancestor)"
     ${QAWORKDIR}/trapdoor_pycodestyle.py ancestor || report_error "Trapdoor pycodestyle failed (ancestor)"
     ${QAWORKDIR}/trapdoor_pydocstyle.py ancestor || report_error "Trapdoor pydocstyle failed (ancestor)"
@@ -43,9 +36,6 @@ if [ "${CURRENT_BRANCH}" != 'master' ] && [ "${CURRENT_COMMIT}" != ${ANCESTOR_CO
 
     # Analyze trapdoor results (from QAWORKDIR)
     ${QAWORKDIR}/trapdoor_coverage.py report || report_error "Trapdoor coverage regressions"
-    ${QAWORKDIR}/trapdoor_cppcheck.py report || report_error "Trapdoor cppcheck regressions"
-    ${QAWORKDIR}/trapdoor_cpplint.py report || report_error "Trapdoor cpplint regressions"
-    ${QAWORKDIR}/trapdoor_doxygen.py report || report_error "Trapdoor doxygen regressions"
     ${QAWORKDIR}/trapdoor_pylint.py report || report_error "Trapdoor pylint regressions"
     ${QAWORKDIR}/trapdoor_pycodestyle.py report || report_error "Trapdoor pycodestyle regressions"
     ${QAWORKDIR}/trapdoor_pydocstyle.py report || report_error "Trapdoor pydocstyle regressions"

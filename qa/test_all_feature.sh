@@ -17,12 +17,8 @@ ${BASH_SOURCE%/*}/check_names.py || report_error "Failed author/committer check 
 # Clean stuff
 echo 'Cleaning source tree'
 ./cleanfiles.sh &> /dev/null
-# Construct the reference atoms
-echo 'Rebuilding database of reference atoms'
-rm -rf data/refatoms/*.h5
-(cd data/refatoms; make all) || report_error "Failed to make reference atoms (current branch)"
-# In-place build of HORTON
-python setup.py build_ext -i || report_error "Failed to build HORTON (current branch)"
+# In-place build of chemtools
+python setup.py build_ext -i || report_error "Failed to build chemtools (current branch)"
 # Run the slow tests
 nosetests -v -a slow || report_error "Some slow tests failed (current branch)"
 # Build the documentation
@@ -41,9 +37,6 @@ else
 
     # Run the first part of the comparative tests.
     ${BASH_SOURCE%/*}/trapdoor_coverage.py feature || report_error "Trapdoor coverage failed (feature branch)"
-    ${BASH_SOURCE%/*}/trapdoor_cppcheck.py feature || report_error "Trapdoor cppcheck failed (feature branch)"
-    ${BASH_SOURCE%/*}/trapdoor_cpplint.py feature || report_error "Trapdoor cpplint failed (feature branch)"
-    ${BASH_SOURCE%/*}/trapdoor_doxygen.py feature || report_error "Trapdoor doxygen failed (feature branch)"
     ${BASH_SOURCE%/*}/trapdoor_pylint.py feature || report_error "Trapdoor pylint failed (feature branch)"
     ${BASH_SOURCE%/*}/trapdoor_pycodestyle.py feature || report_error "Trapdoor pycodestyle failed (feature branch)"
     ${BASH_SOURCE%/*}/trapdoor_pydocstyle.py feature || report_error "Trapdoor pydocstyle failed (feature branch)"
