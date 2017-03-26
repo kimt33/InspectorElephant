@@ -95,7 +95,7 @@ class CoverageTrapdoorProgram(TrapdoorProgram):
         messages = set([])
 
         # Run fast unit tests with nosetests, with coverage
-        command = ['nosetests', '-v', '-a', '!slow',
+        command = ['nosetests', '-v',
                    '--with-coverage',
                    '--cover-erase',
                    '--cover-branches',

@@ -265,6 +265,7 @@ class TrapdoorProgram(object):
         with open(self.trapdoor_config_file, 'r') as f:
             config = json.load(f)
         counter, messages = self.get_stats(config, args)
+        _print_messages('MESSAGES :', messages, pattern=None)
         print 'NUMBER OF MESSAGES :', len(messages)
         print 'ADDING SOURCE ...'
         self._add_contexts(messages)
@@ -317,6 +318,14 @@ class TrapdoorProgram(object):
                 bisect.insort(l, message)
         # 2) Loop over all files and collect some source context for each message
         for filename, file_messages in mdict.iteritems():
+            # case insensitive search for filename
+            try:
+                dir_name = os.path.dirname(filename)
+                filename, = [os.path.join(dir_name, i) for i in os.listdir(dir_name)
+                             if i.lower() == os.path.basename(filename).lower()]
+            except ValueError:
+                raise IOError('Cannot find exactly one file that is a case insensitive '
+                              'match for {0}'.format(filename))
             with open(filename) as source_file:
                 lines = source_file.readlines()
                 for message in file_messages:
