@@ -7,7 +7,7 @@
 
 # Change this to a space-delimited list of dirs in the top level of your project that contain
 # code to be checked.
-CODE_DIRS="data horton doc scripts tools"
+CODE_DIRS="data chemtools doc examples scripts tools"
 
 ## Nothing to change below this line ##
 
@@ -34,3 +34,4 @@ if [[ `git diff --cached | grep '^+' | sed  's/^.//' | sed 's:#.*$::g' | grep 'p
     git diff --cached | grep '^+' | sed  's/^.//' | sed 's:#.*$::g' | grep print
     exit 1
 fi
+
