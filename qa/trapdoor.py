@@ -264,6 +264,11 @@ class TrapdoorProgram(object):
         start_time = time.time()
         with open(self.trapdoor_config_file, 'r') as f:
             config = json.load(f)
+            # overwrite default configuration with custom configuration
+            custom_config = 'trapdoor_{0}_config'.format(self.name)
+            if custom_config in config:
+                config.update(config[custom_config])
+
         counter, messages = self.get_stats(config, args)
         print 'NUMBER OF MESSAGES :', len(messages)
         print 'ADDING SOURCE ...'
