@@ -80,6 +80,7 @@ class PylintTrapdoorProgram(TrapdoorProgram):
 
         # Collect python files (pylint ignore is quite bad.. need to ignore manually)
         py_extra = get_source_filenames(config, 'py', unpackaged_only=True)
+
         def get_filenames(file_or_dir, exclude=tuple()):
             """Recursively finds all of the files within the given file or directory.
 
