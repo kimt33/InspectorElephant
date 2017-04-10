@@ -13,7 +13,12 @@
     "trapdoor_namespace_config": {},
     "trapdoor_coverage_config": {},
     "trapdoor_pycodestyle_config": {},
-    "trapdoor_pydocstyle_config": {},
+    "trapdoor_pydocstyle_config": {"default_match": ".*\\.py",
+                                   "default_ignore": "D100,D101,D102,D103,D104,D105",
+                                   "custom": {"1": {"match": "",
+                                                    "ignore": ""}
+                                             }
+                                   },
     "trapdoor_pylint_config": {},
     "trapdoor_cppcheck_config": {},
     "trapdoor_cpplint_config": {},
