@@ -42,7 +42,6 @@ class PylintTrapdoorProgram(TrapdoorProgram):
     def __init__(self):
         """Initialize a PylintTrapdoorProgram instance."""
         TrapdoorProgram.__init__(self, 'pylint')
-        self.rcfile = os.path.join(self.qaworkdir, 'pylintrc')
 
     def prepare(self):
         """Make some preparations in feature branch for running pylint.
@@ -50,8 +49,6 @@ class PylintTrapdoorProgram(TrapdoorProgram):
         This includes a copy of tools/qa/pylintrc to QAWORKDIR.
         """
         TrapdoorProgram.prepare(self)
-        qatooldir = os.path.dirname(os.path.abspath(__file__))
-        shutil.copy(os.path.join(qatooldir, 'pylintrc'), self.rcfile)
 
     def get_stats(self, config, args):
         """Run tests using Pylint.
@@ -70,22 +67,56 @@ class PylintTrapdoorProgram(TrapdoorProgram):
         messages : Set([]) of strings
                    All errors encountered in the current branch.
         """
+        # get default rcfile
+        qatooldir = os.path.dirname(os.path.abspath(__file__))
+        default_rc_file = os.path.join(self.qaworkdir, config['default_rc'])
+        # FIXME: not too sure if this should be in prepare
+        shutil.copy(os.path.join(qatooldir, os.path.basename(default_rc_file)), default_rc_file)
+
         # get Pylint version
-        command = ['pylint', '--version', '--rcfile=%s' % self.rcfile]
+        command = ['pylint', '--version', '--rcfile={0}'.format(default_rc_file)]
         version_info = ''.join(run_command(command, verbose=False)[0].split('\n')[:2])
         print 'USING              :', version_info
 
         # Collect python files not present in packages
         py_extra = get_source_filenames(config, 'py', unpackaged_only=True)
 
+        output = ''
+        exclude_files = []
+        for custom_config in config['custom'].values():
+            rc_file = os.path.join(self.qaworkdir, custom_config['rc'])
+            shutil.copy(os.path.join(qatooldir, os.path.basename(rc_file)), rc_file)
+
+            py_files = []
+            for custom_file in custom_config['custom_file']:
+                if custom_file in config['py_packages']:
+                    py_files.append(custom_file)
+                    continue
+                elif os.path.isfile(custom_file):
+                    py_files.append(custom_file)
+                for dirpath, _dirnames, filenames in os.walk(custom_file):
+                    for filename in filenames:
+                        if os.path.splitext(filename)[1] == '.py':
+                            py_files.append(os.path.join(dirpath, filename))
+            # call Pylint
+            output += run_command(['pylint'] +
+                                  py_files +
+                                  ['--rcfile={0}'.format(rc_file),
+                                   '--ignore={0}'.format(','.join(config['py_exclude'])),
+                                   '-j 2', ],
+                                  has_failed=has_failed)[0]
+            # exclude directories/files
+            exclude_files.extend(py_files)
+        # remove excluded files
+        py_files = [i for i in config['py_packages'] + py_extra if i not in exclude_files]
         # call Pylint
-        command = ['pylint'] + config['py_packages'] \
-                  + py_extra \
-                  + ['--rcfile=%s' % self.rcfile,
-                     '--ignore=%s' % (
-                         ','.join(config['py_exclude'])),
-                     '-j 2', ]
-        output = run_command(command, has_failed=has_failed)[0]
+        output += run_command(['pylint'] +
+                              py_files +
+                              ['--rcfile={0}'.format(default_rc_file),
+                               '--ignore={0}'.format(','.join(config['py_exclude'] +
+                                                              exclude_files)),
+                               '-j 2', ],
+                              has_failed=has_failed)[0]
 
         # parse the output of Pylint into standard return values
         lines = output.split('\n')[:-1]
