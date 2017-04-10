@@ -78,8 +78,42 @@ class PylintTrapdoorProgram(TrapdoorProgram):
         version_info = ''.join(run_command(command, verbose=False)[0].split('\n')[:2])
         print 'USING              :', version_info
 
-        # Collect python files not present in packages
+        # Collect python files (pylint ignore is quite bad.. need to ignore manually)
         py_extra = get_source_filenames(config, 'py', unpackaged_only=True)
+
+        def get_filenames(file_or_dir, exclude=tuple()):
+            """Recursively finds all of the files within the given file or directory.
+
+            Avoids the files and directories specified in exclude.
+
+            Parameters
+            ----------
+            file_or_dir : str
+                File or directory
+            exclude : tuple
+                Files or directories to ignore
+
+            Returns
+            -------
+            list of files as a relative path
+            """
+            output = []
+            if os.path.isfile(file_or_dir) and file_or_dir not in exclude:
+                output.append(file_or_dir)
+            elif os.path.isdir(file_or_dir):
+                for dirpath, _dirnames, filenames in os.walk(file_or_dir):
+                    # check if directory is allowed
+                    if any(os.path.samefile(dirpath, i) for i in exclude):
+                        continue
+                    for filename in filenames:
+                        # check if filename is allowed
+                        if (os.path.splitext(filename)[1] != '.py' or
+                                filename in exclude or
+                                any(os.path.samefile(os.path.join(dirpath, filename), i)
+                                    for i in exclude)):
+                            continue
+                        output.append(os.path.join(dirpath, filename))
+            return output
 
         output = ''
         exclude_files = []
@@ -88,35 +122,27 @@ class PylintTrapdoorProgram(TrapdoorProgram):
             rc_file = os.path.join(self.qaworkdir, custom_config['rc'])
             shutil.copy(os.path.join(qatooldir, os.path.basename(rc_file)), rc_file)
 
-            # get list of files in the given directories/files
+            # collect files
             py_files = []
             for custom_file in custom_config['files']:
-                if custom_file in config['py_packages']:
-                    py_files.append(custom_file)
-                    continue
-                elif os.path.isfile(custom_file):
-                    py_files.append(custom_file)
-                for dirpath, _dirnames, filenames in os.walk(custom_file):
-                    for filename in filenames:
-                        if os.path.splitext(filename)[1] == '.py':
-                            py_files.append(os.path.join(dirpath, filename))
+                py_files.extend(get_filenames(custom_file))
+
             # call Pylint
             output += run_command(['pylint'] +
                                   py_files +
                                   ['--rcfile={0}'.format(rc_file),
-                                   '--ignore={0}'.format(','.join(config['py_exclude'])),
                                    '-j 2', ],
                                   has_failed=has_failed)[0]
             # exclude directories/files
             exclude_files.extend(py_files)
-        # remove excluded files
-        py_files = [i for i in config['py_packages'] + py_extra if i not in exclude_files]
+        # get files that have not been run
+        py_files = []
+        for py_file in config['py_packages'] + py_extra:
+            py_files.extend(get_filenames(py_file, exclude=exclude_files + config['py_exclude']))
         # call Pylint
         output += run_command(['pylint'] +
                               py_files +
                               ['--rcfile={0}'.format(default_rc_file),
-                               '--ignore={0}'.format(','.join(config['py_exclude'] +
-                                                              exclude_files)),
                                '-j 2', ],
                               has_failed=has_failed)[0]
 
