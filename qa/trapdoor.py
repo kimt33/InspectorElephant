@@ -268,6 +268,13 @@ class TrapdoorProgram(object):
             custom_config = 'trapdoor_{0}_config'.format(self.name)
             if custom_config in config:
                 config.update(config[custom_config])
+            # cleanup
+            del config['trapdoor_import_config']
+            del config['trapdoor_namespace_config']
+            del config['trapdoor_coverage_config']
+            del config['trapdoor_pycodestyle_config']
+            del config['trapdoor_pydocstyle_config']
+            del config['trapdoor_pylint_config']
 
         counter, messages = self.get_stats(config, args)
         _print_messages('MESSAGES :', messages, pattern=None)

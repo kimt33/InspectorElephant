@@ -66,14 +66,27 @@ class PyDocStyleTrapdoorProgram(TrapdoorProgram):
         version = run_command(command, verbose=False)[0].strip()
         print 'USING              : pydocstyle', version
 
-        # Call pydocstyle in the directories containing Python code. All files will be
-        # checked, including test files. Missing docstrings are ignored because they are
-        # detected by PyLint in a better way.
-        command = ['pydocstyle', '--match=.*\\.py',
-                   '--add-ignore=D100,D101,D102,D103,D104,D105'] + \
-                  config['py_packages'] + \
-                  get_source_filenames(config, 'py', unpackaged_only=True)
-        output = run_command(command, has_failed=has_failed)[1]
+        default_match = '({0})'.format(config['default_match'])
+        output = ''
+        for custom_config in config['custom'].values():
+            match = custom_config['match']
+            ignore = custom_config['ignore']
+            default_match = '(?!{0}){1}'.format(match, default_match)
+            # Call pydocstyle in the directories containing Python code. All files will be
+            # checked, including test files. Missing docstrings are ignored because they are
+            # detected by PyLint in a better way.
+            output += run_command(['pydocstyle',
+                                   '--match={0}'.format(match),
+                                   '--add-ignore={0}'.format(ignore)] +
+                                  config['py_packages'] +
+                                  get_source_filenames(config, 'py', unpackaged_only=True),
+                                  has_failed=has_failed)[1]
+        output += run_command(['pydocstyle',
+                               '--match={0}'.format(default_match),
+                               '--add-ignore={0}'.format(config['default_ignore'])] +
+                              config['py_packages'] +
+                              get_source_filenames(config, 'py', unpackaged_only=True),
+                              has_failed=has_failed)[1]
 
         # Parse the standard output of pydocstyle
         counter = Counter()
