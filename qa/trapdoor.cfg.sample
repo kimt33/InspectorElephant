@@ -24,7 +24,13 @@
                                                     "ignore": ""}
                                              }
                                    },
-    "trapdoor_pylint_config": {},
+    "trapdoor_pylint_config": {"default_rc":  "pylintrc",
+                               "custom": {"1": {"rc": "",
+                                                "files": []
+                                               }
+
+                                         }
+                              }
     "trapdoor_cppcheck_config": {},
     "trapdoor_cpplint_config": {},
     "trapdoor_doxygen_config": {}
