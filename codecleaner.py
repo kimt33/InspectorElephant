@@ -25,13 +25,16 @@ import sys
 
 
 def clean_code(fn):
-    """Return the clean version of a file in which trailing whitespaces on each line are removed,
-       tabs are replaced by four spaces, and empty lines at the end of the file are discarded.
+    """Return the clean version of a file.
 
-       *** Arguments ***
+    Trailing whitespaces are removed.
+    Tabs are replaced with four spaces
+    Empty lines at the end of the file are discarded
 
-       fn
-           The file to be cleaned.
+    Parameters
+    ----------
+    fn
+       The file to be cleaned.
     """
     print 'Cleaning'.upper(), fn
 
