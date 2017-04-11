@@ -42,7 +42,6 @@ class PylintTrapdoorProgram(TrapdoorProgram):
     def __init__(self):
         """Initialize a PylintTrapdoorProgram instance."""
         TrapdoorProgram.__init__(self, 'pylint')
-        self.rcfile = os.path.join(self.qaworkdir, 'pylintrc')
 
     def prepare(self):
         """Make some preparations in feature branch for running pylint.
@@ -50,8 +49,6 @@ class PylintTrapdoorProgram(TrapdoorProgram):
         This includes a copy of tools/qa/pylintrc to QAWORKDIR.
         """
         TrapdoorProgram.prepare(self)
-        qatooldir = os.path.dirname(os.path.abspath(__file__))
-        shutil.copy(os.path.join(qatooldir, 'pylintrc'), self.rcfile)
 
     def get_stats(self, config, args):
         """Run tests using Pylint.
@@ -70,22 +67,84 @@ class PylintTrapdoorProgram(TrapdoorProgram):
         messages : Set([]) of strings
                    All errors encountered in the current branch.
         """
+        # get default rcfile
+        qatooldir = os.path.dirname(os.path.abspath(__file__))
+        default_rc_file = os.path.join(self.qaworkdir, config['default_rc'])
+        # FIXME: not too sure if this should be in prepare
+        shutil.copy(os.path.join(qatooldir, os.path.basename(default_rc_file)), default_rc_file)
+
         # get Pylint version
-        command = ['pylint', '--version', '--rcfile=%s' % self.rcfile]
+        command = ['pylint', '--version', '--rcfile={0}'.format(default_rc_file)]
         version_info = ''.join(run_command(command, verbose=False)[0].split('\n')[:2])
         print 'USING              :', version_info
 
-        # Collect python files not present in packages
+        # Collect python files (pylint ignore is quite bad.. need to ignore manually)
         py_extra = get_source_filenames(config, 'py', unpackaged_only=True)
 
+        def get_filenames(file_or_dir, exclude=tuple()):
+            """Recursively finds all of the files within the given file or directory.
+
+            Avoids the files and directories specified in exclude.
+
+            Parameters
+            ----------
+            file_or_dir : str
+                File or directory
+            exclude : tuple
+                Files or directories to ignore
+
+            Returns
+            -------
+            list of files as a relative path
+            """
+            output = []
+            if os.path.isfile(file_or_dir) and file_or_dir not in exclude:
+                output.append(file_or_dir)
+            elif os.path.isdir(file_or_dir):
+                for dirpath, _dirnames, filenames in os.walk(file_or_dir):
+                    # check if directory is allowed
+                    if any(os.path.samefile(dirpath, i) for i in exclude):
+                        continue
+                    for filename in filenames:
+                        # check if filename is allowed
+                        if (os.path.splitext(filename)[1] != '.py' or
+                                filename in exclude or
+                                any(os.path.samefile(os.path.join(dirpath, filename), i)
+                                    for i in exclude)):
+                            continue
+                        output.append(os.path.join(dirpath, filename))
+            return output
+
+        output = ''
+        exclude_files = []
+        # run pylint test using each configuration
+        for custom_config in config['custom'].values():
+            rc_file = os.path.join(self.qaworkdir, custom_config['rc'])
+            shutil.copy(os.path.join(qatooldir, os.path.basename(rc_file)), rc_file)
+
+            # collect files
+            py_files = []
+            for custom_file in custom_config['files']:
+                py_files.extend(get_filenames(custom_file))
+
+            # call Pylint
+            output += run_command(['pylint'] +
+                                  py_files +
+                                  ['--rcfile={0}'.format(rc_file),
+                                   '-j 2', ],
+                                  has_failed=has_failed)[0]
+            # exclude directories/files
+            exclude_files.extend(py_files)
+        # get files that have not been run
+        py_files = []
+        for py_file in config['py_packages'] + py_extra:
+            py_files.extend(get_filenames(py_file, exclude=exclude_files + config['py_exclude']))
         # call Pylint
-        command = ['pylint'] + config['py_packages'] \
-                  + py_extra \
-                  + ['--rcfile=%s' % self.rcfile,
-                     '--ignore=%s' % (
-                         ','.join(config['py_exclude'])),
-                     '-j 2', ]
-        output = run_command(command, has_failed=has_failed)[0]
+        output += run_command(['pylint'] +
+                              py_files +
+                              ['--rcfile={0}'.format(default_rc_file),
+                               '-j 2', ],
+                              has_failed=has_failed)[0]
 
         # parse the output of Pylint into standard return values
         lines = output.split('\n')[:-1]
