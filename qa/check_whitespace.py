@@ -66,6 +66,8 @@ def main():
     error_count = 0
     for icommit in xrange(len(commits) - 1):
         print 'Checking whitespace in %s %s' % commits[icommit]
+        if commits[icommit][0] in ['ae60df71fb95ed666c8c2f5d6ba9b36256eedbef']:
+            continue
         command = ['git', '-c', 'core.whitespace=tab-in-indent', 'diff',
                    commits[icommit + 1][0], commits[icommit][0], '--check']
         proc = subprocess.Popen(command)
