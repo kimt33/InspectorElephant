@@ -44,6 +44,10 @@ def check_names(key, kind):
     command = ['git', 'log', '--format=%%%sN <%%%sE>' % (key, key)]
     names = subprocess.check_output(command).split('\n')[:-1]
 
+    # Add GitHub <noreply@github.com> as a committer
+    if key == 'c':
+        names.append('GitHub <noreply@github.com>')
+
     # Turn that list into a set to remove duplicates.
     names = set(names)
 
