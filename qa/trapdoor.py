@@ -277,6 +277,7 @@ class TrapdoorProgram(object):
             del config['trapdoor_pylint_config']
 
         counter, messages = self.get_stats(config, args)
+        _print_messages('MESSAGES :', messages, pattern=None)
         print 'NUMBER OF MESSAGES :', len(messages)
         print 'ADDING SOURCE ...'
         self._add_contexts(messages)
@@ -337,7 +338,6 @@ class TrapdoorProgram(object):
             except ValueError:
                 raise IOError('Cannot find exactly one file that is a case insensitive '
                               'match for {0}'.format(filename))
-
             with open(filename) as source_file:
                 lines = source_file.readlines()
                 for message in file_messages:
