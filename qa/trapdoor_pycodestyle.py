@@ -29,6 +29,7 @@ https://www.python.org/dev/peps/pep-0008/. Not everything can be tested by a pro
 import os
 import shutil
 from collections import Counter
+import json
 
 import pycodestyle
 from trapdoor import TrapdoorProgram, Message
@@ -47,6 +48,15 @@ class PyCodeStyleTrapdoorProgram(TrapdoorProgram):
         This includes a copy of tools/qa/pycodestyle to QAWORKDIR.
         """
         TrapdoorProgram.prepare(self)
+        qatooldir = os.path.dirname(os.path.abspath(__file__))
+        with open(self.trapdoor_config_file, 'r') as f:
+            config = json.load(f)['trapdoor_pycodestyle_config']
+            shutil.copy(os.path.join(qatooldir, config['default_config_file']),
+                        os.path.join(self.qaworkdir, config['default_config_file']))
+
+            for custom_config in config['custom'].values():
+                shutil.copy(os.path.join(qatooldir, custom_config['config_file']),
+                            os.path.join(self.qaworkdir, custom_config['config_file']))
 
     def get_stats(self, config, args):
         """Run tests using pycodestyle.
@@ -68,35 +78,29 @@ class PyCodeStyleTrapdoorProgram(TrapdoorProgram):
         # Get version
         print 'USING PYCODESTYLE  :', pycodestyle.__version__
 
-        qatooldir = os.path.dirname(os.path.abspath(__file__))
-        exclude_directories = []
-        # run pycode test on each directories
+        exclude_directory = []
+        # run pycode test on each directory/custom
         for custom_config in config['custom'].values():
             # copy over configfile
             config_file = os.path.join(self.qaworkdir, custom_config['config_file'])
-            # FIXME: not too sure if this should be in prepare
-            shutil.copy(os.path.join(qatooldir, os.path.basename(config_file)), config_file)
-            
-            # Call pycodestyle with custom config file
             styleguide = pycodestyle.StyleGuide(reporter=CompleteReport, config_file=config_file)
             styleguide.options.exclude.extend(config['py_exclude'])
+
+            # Call pycodestyle
             print 'EXCLUDED FILES     :', styleguide.options.exclude
             print 'IGNORED MESSAGES   :', styleguide.options.ignore
             print 'MAX LINE LENGTH    :', styleguide.options.max_line_length
-            for py_directory in custom_config['directories']:
+            for py_directory in custom_config['directory']:
                 print 'RUNNING            : pycodestyle %s (through Python API)' % py_directory
                 styleguide.input_dir(py_directory)
-            exclude_directories += [os.path.abspath(i) for i in custom_config['directories']]
+            exclude_directory += [os.path.abspath(i) for i in custom_config['directory']]
         # copy over configfile
         default_config_file = os.path.join(self.qaworkdir, config['default_config_file'])
-        # FIXME: not too sure if this should be in prepare
-        shutil.copy(os.path.join(qatooldir, os.path.basename(default_config_file)),
-                    default_config_file)
-        # Call pycodestyle with default config file (for files that have not been tested yet)
+        # run pycode test on the rest (that are in py_directories)
         styleguide = pycodestyle.StyleGuide(reporter=CompleteReport,
                                             config_file=default_config_file)
         styleguide.options.exclude.extend(config['py_exclude'])
-        styleguide.options.exclude.extend(exclude_directories)
+        styleguide.options.exclude.extend(exclude_directory)
         print 'EXCLUDED FILES     :', styleguide.options.exclude
         print 'IGNORED MESSAGES   :', styleguide.options.ignore
         print 'MAX LINE LENGTH    :', styleguide.options.max_line_length
