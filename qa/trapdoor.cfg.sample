@@ -10,6 +10,7 @@
     "doxygen_root": "doc",
     "doxygen_conf": "doxygen.conf",
     "doxygen_warnings": "doxygen_warnings.log",
+    "trapdoor_import_config": {},
     "trapdoor_namespace_config": {},
     "trapdoor_coverage_config": {},
     "trapdoor_pycodestyle_config": {"default_config_file": "pycodestyle.ini",
