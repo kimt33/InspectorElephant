@@ -155,10 +155,10 @@ def _print_messages(header, messages, pattern=None):
               When given, only messages containing ``pattern`` will be printed.
     """
     if len(messages) > 0:
-        print header
+        print(header)
         for msg in sorted(messages):
             if pattern is None or pattern in msg.filename:
-                print msg
+                print(msg)
 
 
 class TrapdoorProgram(object):
@@ -200,11 +200,10 @@ class TrapdoorProgram(object):
         ``feature``, ``ancestor`` or ``report``.
         """
         args = self.parse_args()
-        print r'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+      ~~~~~~~~~~~~~~~~~'
-        print r'  TRAPDOOR %15s:%-10s                   \          _\( )/_' % (
-            self.name, args.mode)
-        print r'                                                         \          /(o)\ '
-        print r'                                                          +~~~~~~~~~~~~~~~~~~~~'
+        print(r'~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+      ~~~~~~~~~~~~~~~~~')
+        print(r'  TRAPDOOR %15s:%-10s                   \          _\( )/_' % (self.name, args.mode))
+        print(r'                                                         \          /(o)\ ')
+        print(r'                                                          +~~~~~~~~~~~~~~~~~~~~')
         if args.mode == 'feature':
             self.prepare()
             self.run_tests(args)
@@ -236,8 +235,7 @@ class TrapdoorProgram(object):
         """
         parser.add_argument('mode', choices=['feature', 'ancestor', 'report'])
         parser.add_argument('-n', '--noisy', default=False, action='store_true',
-                            help='Also print output for problems that did not '
-                                 'deteriorate.')
+                            help='Also print output for problems that did not deteriorate.')
         parser.add_argument('-f', '--pattern', metavar='PATTERN', dest='pattern',
                             help='Only print messages whose filename contains PATTERN')
 
@@ -277,15 +275,15 @@ class TrapdoorProgram(object):
             del config['trapdoor_pylint_config']
 
         counter, messages = self.get_stats(config, args)
-        print 'NUMBER OF MESSAGES :', len(messages)
-        print 'ADDING SOURCE ...'
+        print('NUMBER OF MESSAGES :', len(messages))
+        print('ADDING SOURCE ...')
         self._add_contexts(messages)
-        print 'NUMBER OF MESSAGES :', len(messages)
-        print 'SUM OF COUNTERS    :', sum(counter.itervalues())
+        print('NUMBER OF MESSAGES :', len(messages))
+        print('SUM OF COUNTERS    :', sum(counter.itervalues()))
         fn_pp = 'trapdoor_results_%s_%s.pp' % (self.name, args.mode)
         with open(os.path.join(self.qaworkdir, fn_pp), 'w') as f:
             cPickle.dump((counter, messages), f)
-        print 'WALL TIME          : %.1f' % (time.time() - start_time)
+        print('WALL TIME          : %.1f' % (time.time() - start_time))
 
     def get_stats(self, config, args):
         """Run tests using an external program and collect its output.
@@ -397,9 +395,9 @@ class TrapdoorProgram(object):
 
         resolved_counter = counter_ancestor - counter_feature
         if len(resolved_counter) > 0:
-            print 'SOME COUNTERS DECREASED'
+            print('SOME COUNTERS DECREASED')
             for key, counter in resolved_counter.iteritems():
-                print '%s  |  %+6i' % (key, -counter)
+                print('%s  |  %+6i' % (key, -counter))
 
     def check_regression(self, (counter_feature, messages_feature),
                          (counter_ancestor, messages_ancestor), pattern=None):
@@ -426,12 +424,12 @@ class TrapdoorProgram(object):
 
         new_counter = counter_feature - counter_ancestor
         if len(new_counter) > 0:
-            print 'SOME COUNTERS INCREASED'
+            print('SOME COUNTERS INCREASED')
             for key, counter in new_counter.iteritems():
-                print '%s  |  %+6i' % (key, counter)
+                print('%s  |  %+6i' % (key, counter))
             sys.exit(1)
         else:
-            print 'GOOD (ENOUGH)'
+            print('GOOD (ENOUGH)')
 
 
 def get_source_filenames(config, language, unpackaged_only=False):
@@ -524,16 +522,16 @@ def run_command(command, verbose=True, cwd=None, has_failed=None):
         has_failed = default_has_failed
 
     if verbose:
-        print 'RUNNING            :', ' '.join(command)
+        print('RUNNING            :', ' '.join(command))
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd)
     stdout, stderr = proc.communicate()
     if has_failed(proc.returncode, stdout, stderr):
-        print 'STDOUT'
-        print '------'
-        print stdout
-        print 'STDERR'
-        print '------'
-        print stderr
+        print('STDOUT')
+        print('------')
+        print(stdout)
+        print('STDERR')
+        print('------')
+        print(stderr)
         raise RuntimeError('Subprocess returned non-zero exit status %i' % proc.returncode)
     else:
         return stdout, stderr
