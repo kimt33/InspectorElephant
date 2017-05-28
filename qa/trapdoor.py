@@ -26,7 +26,10 @@ This model provides the ``TrapdoorProgram`` base class for all trapdoor programs
 
 import argparse
 import bisect
-import cPickle
+# for python2
+# import cPickle
+# for python3
+import _pickle as cPickle
 from fnmatch import fnmatch
 import json
 import os
@@ -370,8 +373,8 @@ class TrapdoorProgram(object):
             self.print_details(results_feature, results_ancestor, pattern)
         self.check_regression(results_feature, results_ancestor, pattern)
 
-    def print_details(self, (counter_feature, messages_feature),
-                      (counter_ancestor, messages_ancestor), pattern=None):
+    def print_details(self, counter_feature_messages_feature,
+                      counter_ancestor_messages_ancestor, pattern=None):
         """Print optional detailed report of the test results.
 
         Parameters
@@ -387,6 +390,9 @@ class TrapdoorProgram(object):
         pattern : None or str
                   When given, only messages containing ``pattern`` will be printed.
         """
+        counter_feature, messages_feature = counter_feature_messages_feature
+        counter_ancestor, messages_ancestor = counter_ancestor_messages_ancestor
+
         resolved_messages = sorted(messages_ancestor - messages_feature)
         _print_messages('RESOLVED MESSAGES', resolved_messages, pattern)
 
@@ -399,8 +405,8 @@ class TrapdoorProgram(object):
             for key, counter in resolved_counter.iteritems():
                 print('%s  |  %+6i' % (key, -counter))
 
-    def check_regression(self, (counter_feature, messages_feature),
-                         (counter_ancestor, messages_ancestor), pattern=None):
+    def check_regression(self, counter_feature_messages_feature,
+                         counter_ancestor_messages_ancestor, pattern=None):
         """Check if the counters got worse.
 
         The new errors are printed and if a regression is observed, the program quits with
@@ -419,6 +425,9 @@ class TrapdoorProgram(object):
         pattern : None or str
                   When given, only messages containing ``pattern`` will be printed.
         """
+        counter_feature, messages_feature = counter_feature_messages_feature
+        counter_ancestor, messages_ancestor = counter_ancestor_messages_ancestor
+
         new_messages = sorted(messages_feature - messages_ancestor)
         _print_messages('NEW MESSAGES', new_messages, pattern)
 
