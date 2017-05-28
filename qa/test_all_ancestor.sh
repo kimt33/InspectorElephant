@@ -23,12 +23,8 @@ if [ "${CURRENT_BRANCH}" != 'master' ] && [ "${CURRENT_COMMIT}" != ${ANCESTOR_CO
 
     # Clean stuff
     ./cleanfiles.sh &> /dev/null
-    # Construct the reference atoms
-    echo 'Rebuilding database of reference atoms'
-    rm -rf data/refatoms/*.h5
-    (cd data/refatoms; make all) || report_error "Failed to make reference atoms (ancestor)"
-    # In-place build of HORTON
-    python setup.py build_ext -i || report_error "Failed to build HORTON (ancestor)"
+    # In-place build of package
+    python setup.py build_ext -i || report_error "Failed to build package (ancestor)"
 
     # Run trapdoor tests (from QAWORKDIR)
     ${QAWORKDIR}/trapdoor_coverage.py ancestor || report_error "Trapdoor coverage failed (ancestor)"

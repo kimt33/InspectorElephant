@@ -18,7 +18,7 @@ get_ancestor  # Writes $ANCESTOR_SHA variable.
 echo "--- Basic source tests"
 ${BASH_SOURCE%/*}/check_names.py
 
-echo "--- Build Cython files & HORTON"
+echo "--- Build Package"
 ./cleanfiles.sh
 CC="ccache gcc" ./setup.py build_ext -i
 
@@ -32,7 +32,7 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     git checkout ${ANCESTOR_SHA}
 ## END ##
 
-    echo "--- Build Cython files & HORTON [Ancestor]"
+    echo "--- Build Package"
     ./cleanfiles.sh
     CC="ccache gcc" ./setup.py build_ext -i
 

@@ -17,12 +17,8 @@ ${BASH_SOURCE%/*}/check_names.py || report_error "Failed author/committer check 
 # Clean stuff
 echo 'Cleaning source tree'
 ./cleanfiles.sh &> /dev/null
-# Construct the reference atoms
-echo 'Rebuilding database of reference atoms'
-rm -rf data/refatoms/*.h5
-(cd data/refatoms; make all) || report_error "Failed to make reference atoms (current branch)"
-# In-place build of HORTON
-python setup.py build_ext -i || report_error "Failed to build HORTON (current branch)"
+# In-place build of Package
+python setup.py build_ext -i || report_error "Failed to build package (current branch)"
 # Run the slow tests
 nosetests -v -a slow || report_error "Some slow tests failed (current branch)"
 # Build the documentation

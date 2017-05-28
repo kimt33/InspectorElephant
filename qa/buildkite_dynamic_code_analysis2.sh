@@ -27,10 +27,6 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     buildkite-agent artifact download packagename_pr.tar.gz .
     tar xvf packagename_pr.tar.gz
 
-    echo "--- Build refatoms"
-    rm -rf data/refatoms/*.h5 #data/refatoms/*.tar.bz2
-    make -C data/refatoms/
-
     echo "--- Running trapdoors tests on PR branch"
     rm -rf ${QAWORKDIR}/*.pp
     ${BASH_SOURCE%/*}/trapdoor_pylint.py feature
@@ -40,10 +36,6 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     buildkite-agent artifact download packagename_ancestor.tar.gz .
     ./cleanfiles.sh
     tar xvf packagename_ancestor.tar.gz
-
-    echo "--- Build refatoms"
-    rm -rf data/refatoms/*.h5 #data/refatoms/*.tar.bz2
-    make -C data/refatoms/
 
     echo "--- Running trapdoor tests on ancestor branch"
     copy_qa_scripts
