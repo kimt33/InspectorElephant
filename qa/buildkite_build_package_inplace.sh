@@ -23,8 +23,8 @@ echo "--- Build Cython files & HORTON"
 CC="ccache gcc" ./setup.py build_ext -i
 
 echo "--- Packing build"
-find horton -name "*.so" -o -name "*.pyc" | tar -zcvf horton_pr.tar.gz -T -
-buildkite-agent artifact upload horton_pr.tar.gz
+find packagename -name "*.so" -o -name "*.pyc" | tar -zcvf packagename_pr.tar.gz -T -
+buildkite-agent artifact upload packagename_pr.tar.gz
 
 ## Don't touch this code if you don't understand it ##
 if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
@@ -37,8 +37,8 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     CC="ccache gcc" ./setup.py build_ext -i
 
     echo "--- Packing build [Ancestor]"
-    find horton -name "*.so" -o -name "*.pyc" | tar -zcvf horton_ancestor.tar.gz -T -
-    buildkite-agent artifact upload horton_ancestor.tar.gz
+    find packagename -name "*.so" -o -name "*.pyc" | tar -zcvf packagename_ancestor.tar.gz -T -
+    buildkite-agent artifact upload packagename_ancestor.tar.gz
 
 ## Don't touch this code if you don't understand it ##
 fi

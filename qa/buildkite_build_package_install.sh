@@ -24,13 +24,13 @@ rm -rf installation
 
 echo "--- Running Nosetests"
 cd installation
-PATH=$PATH:$PWD/bin PYTHONPATH=$PWD/lib/python2.7/site-packages:$PWD/lib64/python2.7/site-packages HORTONDATA=$PWD/share/horton nosetests -v --processes=2 --process-timeout=60 -a slow horton
+PATH=$PATH:$PWD/bin PYTHONPATH=$PWD/lib/python2.7/site-packages:$PWD/lib64/python2.7/site-packages HORTONDATA=$PWD/share/packagename nosetests -v --processes=2 --process-timeout=60 -a slow packagename
 
 ## Don't touch this code if you don't understand it ##
 if [ "$BUILDKITE_PULL_REQUEST" = "false" ]; then
 ## END ##
 
-  PATH=$PATH:$PWD/bin PYTHONPATH=$PWD/lib/python2.7/site-packages:$PWD/lib64/python2.7/site-packages HORTONDATA=$PWD/share/horton nosetests -v --processes=2 --process-timeout=60 -a "!slow" horton
+  PATH=$PATH:$PWD/bin PYTHONPATH=$PWD/lib/python2.7/site-packages:$PWD/lib64/python2.7/site-packages HORTONDATA=$PWD/share/packagename nosetests -v --processes=2 --process-timeout=60 -a "!slow" packagename
 
 ## Don't touch this code if you don't understand it ##
 fi

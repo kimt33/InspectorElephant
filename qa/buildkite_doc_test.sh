@@ -20,8 +20,8 @@ export PYTHONPATH=$PWD
 export HORTONDATA=$PWD/data
 
 echo "--- Unpack PR build from previous step"
-buildkite-agent artifact download horton_pr.tar.gz .
-tar xvf horton_pr.tar.gz
+buildkite-agent artifact download packagename_pr.tar.gz .
+tar xvf packagename_pr.tar.gz
 
 echo "--- Building Docs"
 make -C doc html

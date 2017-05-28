@@ -31,8 +31,8 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
     export HORTONDATA=$PWD/data
 
     echo "--- Unpack PR build from previous step"
-    buildkite-agent artifact download horton_pr.tar.gz .
-    tar xvf horton_pr.tar.gz
+    buildkite-agent artifact download packagename_pr.tar.gz .
+    tar xvf packagename_pr.tar.gz
 
     echo "--- Running trapdoor tests on PR branch"
     rm -rf ${QAWORKDIR}/*.pp
@@ -41,9 +41,9 @@ if [ "$BUILDKITE_PULL_REQUEST" != "false" ]; then
 
     echo "--- Unpack ancestor build from previous step"
     git checkout ${ANCESTOR_SHA}
-    buildkite-agent artifact download horton_ancestor.tar.gz .
+    buildkite-agent artifact download packagename_ancestor.tar.gz .
     ./cleanfiles.sh
-    tar xvf horton_ancestor.tar.gz
+    tar xvf packagename_ancestor.tar.gz
 
     echo "--- Build refatoms"
     rm -rf data/refatoms/*.h5 #data/refatoms/*.tar.bz2
