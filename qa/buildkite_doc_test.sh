@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# This script tests building the documentation of HORTON.
+# This script tests building the documentation of packagename.
 #
 # Reimplement as needed.
 #
